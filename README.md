@@ -32,7 +32,9 @@ This project simulates the movement of vehicles (a truck and a car) through a pr
 # Summary
 This project simulates truck and car movements through toll gates within a 100km by 100km area using SimPy. It dynamically calculates toll charges based on distance and vehicle type, updates user balances, and alerts when vehicles pass toll gates. Visualization is provided through an interactive Folium map and data analysis charts using Matplotlib, showcasing distance traveled and remaining balances. It's designed to simulate real-time traffic scenarios, providing insights into toll road operations and user interactions in a controlled environment.
 # Visualization
-![graphs](https://github.com/user-attachments/assets/48353319-7832-4e68-80c2-b1fffb4140a5)
-![Screenshot 2024-07-14 162634](https://github.com/user-attachments/assets/f9dd652d-120f-4e8e-a761-0558765c959f)
+![graphs](https://github.com/user-attachments/assets/8d0fd57d-9053-43b0-bc0b-4d53223af6e6)
+![Screenshot 2024-07-14 162634](https://github.com/user-attachments/assets/38339600-12fe-49e2-ba24-d7a841afffe5)
+
+
 # License
 This project is licensed under the MIT License.
