@@ -28,17 +28,14 @@ users = {
     2: {'balance': 7000, 'vehicle_type': 'car', 'distance': 7.0}
 }
 
-
 def random_point_within_area(area_size):
     x = random.uniform(77.0, 77.0 + area_size / 100.0)
     y = random.uniform(12.0, 12.0 + area_size / 100.0)
     return Point(x, y)
 
-
 def create_route(start, end, toll_gates):
     points = [start] + list(toll_gates.geometry) + [end]
     return LineString(points)
-
 
 class Vehicle:
     def __init__(self, env, vehicle_id, start_location, end_location, user_id, distance, non_toll=False):
@@ -63,20 +60,22 @@ class Vehicle:
             current_toll = self.calculate_toll()
             if not self.non_toll:
                 users[self.user_id]['balance'] -= current_toll
+                print(f"Vehicle {self.vehicle_id}: Distance Traveled = {self.distance_traveled:.2f} km, Toll = {current_toll:.2f} Rs, User Balance = {users[self.user_id]['balance']:.2f} Rs")
+                check_pass(self.vehicle_id)
 
     def calculate_toll(self):
         total_toll = 0
         if self.non_toll:
             return total_toll
-
+        
         for index, row in toll_gates.iterrows():
             if self.route.intersects(row['geometry'].buffer(0.001)):
                 intersected = self.route.intersection(row['geometry'].buffer(0.001))
                 if isinstance(intersected, LineString):
-                    distance_in_zone = sum(geodesic((p[1], p[0]), (q[1], q[0])).km for p, q in
-                                           zip(intersected.coords[:-1], intersected.coords[1:]))
+                    distance_in_zone = sum(geodesic((p[1], p[0]), (q[1], q[0])).km for p, q in zip(intersected.coords[:-1], intersected.coords[1:]))
                     toll = distance_in_zone * row['rate_per_km']
                     total_toll += toll
+                    print(f"Alert: Vehicle {self.vehicle_id} has entered Toll Gate {row['id']}")
 
         if self.user_id == 1:
             total_toll = 60
@@ -85,6 +84,8 @@ class Vehicle:
 
         return total_toll
 
+def check_pass(vehicle_id):
+    print(f"Alert: Vehicle {vehicle_id} has passed through a toll gate.")
 
 env = simpy.Environment()
 
@@ -93,14 +94,12 @@ vehicles = [
     Vehicle(env, 2, random_point_within_area(AREA_SIZE), random_point_within_area(AREA_SIZE), 2, users[2]['distance'])
 ]
 
-
 def run_simulation(env, vehicles):
     while True:
         yield env.timeout(1)
         for vehicle in vehicles:
             if vehicle.distance_traveled >= vehicle.distance:
                 continue
-
 
 env.process(run_simulation(env, vehicles))
 env.run(until=SIMULATION_TIME)
@@ -135,6 +134,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
+print(df)
 
 plt.figure(figsize=(10, 5))
 plt.subplot(1, 2, 1)
